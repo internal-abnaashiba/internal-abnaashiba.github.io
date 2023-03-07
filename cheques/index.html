@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ar">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Abnaa Shiba Contracting</title>
+
+    <!-- CSS FILES -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="../css/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="../css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <link rel="icon" href="../images/logo.jpg">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    <script src="../js/taf.js"></script>
+
+</head>
+
+<body id="section_1">
+
+    <nav class="navbar navbar-expand-lg bg-light shadow-lg" style="direction: rtl;">
+        <div class="container">
+
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../#home">الصفحة الرئيسية</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link click-scroll" href="../#about">عن الشركة</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link click-scroll" href="../#work">أعمالنا</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link click-scroll" href="../#jops">ألوظائف</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link click-scroll" href="../#contact">تواصل معنا</a>
+                    </li>
+
+                    <li class="nav-item ms-3">
+                        <a class="nav-link custom-btn custom-border-btn btn" href="#">تسجيل الدخول</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="../#home">
+                <img src="../images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
+                <span>
+                    Abnaa Shiba
+                    <small>Contracting and Real Estate Company</small>
+                </span>
+            </a>
+
+        </div>
+    </nav>
+
+    <main>
+
+
+
+
+
+        <section class="section-padding">
+            <div class="container">
+                <div class="col" style="align-items: center;">
+
+                    <div class="col-lg-10 col-12 text-center mx-auto">
+                        <h2 class="mb-5">طباعة الشيكات</h2>
+                    </div>
+
+                    <div class="col-lg-10 col-12 text-center mx-auto">
+                        <div class="featured-block d-flex justify-content-center align-items-center">
+                            <label for="input-file" style="    border: 1px solid #ccc;
+                                display: inline-block;
+                                padding: 6px 12px;
+                                cursor: pointer;
+                            ">
+                                اختيار ملف
+                            </label>
+                            <input id="input-file" type="file" accept=".xlsx,.xls,.csv" style="display: none;" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-12 text-center mx-auto">
+                        <div>
+                            <p id="chosen-file-name"> No file chosen. </p>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-12 text-center mx-auto">
+                        <div id="print-button" class="featured-block d-flex justify-content-center align-items-center">
+                            <button style="    border: 1px solid #ccc;
+                            display: inline-block;
+                            padding: 6px 12px;
+                            cursor: pointer;
+                        "> طباعة الشيكات </button>
+
+                        </div>
+                    </div>
+
+                </div>
+        </section>
+
+
+
+
+        <script>
+
+            document.getElementById('input-file').addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                document.getElementById('chosen-file-name').innerHTML = file.name;
+
+            });
+
+            document.getElementById('print-button').addEventListener('click', function () {
+                const inputFile = document.getElementById('input-file').files[0];
+                if (inputFile) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        const fileData = reader.result;
+                        const workbook = XLSX.read(fileData, { type: 'binary' });
+                        const sheetName = workbook.SheetNames[0];
+                        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 'A', defval: '' });
+                        const printWindow = window.open(`print.html?name="${inputFile.name.split('.').slice(0, -1).join('.')}"`, '_blank');
+                        printWindow.addEventListener('load', function () {
+                            // Pass the file object to the print page
+                            printWindow.postMessage({ file: inputFile, data: fileData }, '*');
+                        });
+                    }
+                    reader.readAsBinaryString(inputFile);
+                }
+                else {
+                    alert("برجاء اختيار الملف أولاً")
+                }
+            });
+            function parseExcelToJSON(data) {
+                // Parse the Excel file and convert it to JSON
+                // ...
+                return jsonData;
+            }
+        </script>
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container" style="direction: rtl;">
+            <div class="row">
+                <div class="col-lg-3 col-12 mb-4">
+                    <img src="../images/logo.jpg" class="logo img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-12 mb-4">
+                    <h5 class="site-footer-title mb-3">روابط مهمة</h5>
+
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item"><a href="../#home" class="footer-menu-link">الصفحة الرئيسية</a>
+                        </li>
+                        <li class="footer-menu-item"><a href="../#work" class="footer-menu-link">أعمالنا</a></li>
+                        <li class="footer-menu-item"><a href="../#jops" class="footer-menu-link">الوظائف</a></li>
+                        <li class="footer-menu-item"><a href="../#about" class="footer-menu-link">عن الشركة</a></li>
+                        <li class="footer-menu-item"><a href="../#contact" class="footer-menu-link">تواصل معنا</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-12 mx-auto">
+                    <h5 class="site-footer-title mb-3">بيانات التواصل</h5>
+
+                    <p class="text-white d-flex mb-2">
+                        <i class="bi-telephone me-2"></i>
+
+                        <a href="tel:+201234567890" class="site-footer-link">
+                            01234567890
+                        </a>
+                    </p>
+
+                    <p class="text-white d-flex">
+                        <i class="bi-envelope me-2"></i>
+
+                        <a href="mailto:info@abnaashiba.com" class="site-footer-link">
+                            info@abnaashiba.com
+                        </a>
+                    </p>
+
+                    <p class="text-white d-flex mt-3">
+                        <i class="bi-geo-alt me-2"></i>
+
+                        <a href="https://goo.gl/maps/qigXTQX86w66cWm29" class="site-footer-link">
+                            الفيوم
+                        </a>
+                    </p>
+
+                    <a href="tel:+201234567890" class="custom-btn btn mt-3">اتصل بنا</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="site-footer-bottom">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-7 col-12" style="direction: ltr;">
+                        <p style="direction: ltr;" class="copyright-text mb-0">This Website was developed by <a
+                                href="https://www.linkedin.com/in/ahmadmhasann/">Ahmed Hassan</a>.</p>
+                        <p style="direction: ltr;" class="copyright-text mb-0">For any support, contact me at <a
+                                href="mailto:ahmadmhasann@gmail.com">ahmadmhasann@gmail.com</a></p>
+                    </div>
+
+                    <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
+                        <ul class="social-icon">
+                            <li class="social-icon-item">
+                                <a href="#" class="social-icon-link bi-envelope"></a>
+                            </li>
+
+                            <li class="social-icon-item">
+                                <a href="https://www.facebook.com/ahmadmhasann/"
+                                    class="social-icon-link bi-facebook"></a>
+                            </li>
+
+                            <li class="social-icon-item">
+                                <a href="https://www.linkedin.com/in/ahmadmhasann/"
+                                    class="social-icon-link bi-linkedin"></a>
+                            </li>
+
+                            <li class="social-icon-item">
+                                <a href="tel:+201024242768" class="social-icon-link bi-telephone-fill"></a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.sticky.js"></script>
+    <script src="../js/click-scroll.js"></script>
+    <script src="../js/counter.js"></script>
+    <script src="../js/custom.js"></script>
+
+</body>
+
+</html>

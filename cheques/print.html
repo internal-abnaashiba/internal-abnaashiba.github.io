@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cheques Print</title>
+  <style>
+    /* Hide everything except the div when printing */
+    .cheque-div,
+    .cheque-div * {
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 627px;
+      height: 291px;
+      overflow: visible;
+      visibility: visible;
+      page-break-after: always;
+      box-sizing: border-box;
+    }
+
+    .background {
+      position: relative;
+      background-image: url("eg-nbe.jpg");
+      background-size: 627px 291px;
+      opacity: 0.60;
+      /* Adjust the opacity as needed */
+      z-index: 0;
+      /* Set a lower z-index than the child elements */
+    }
+
+    .date-div,
+    .date-div * {
+      position: absolute;
+      padding-top: 55px;
+      padding-right: 43px;
+      font-size: smaller;
+      direction: rtl;
+    }
+
+    .place-div,
+    .place-div * {
+      overflow: visible;
+      position: absolute;
+      padding-top: 55px;
+      padding-right: 150px;
+      font-size: smaller;
+      direction: rtl;
+
+    }
+
+    .amount-num-div,
+    .amount-num-div * {
+      position: absolute;
+      padding-top: 140px;
+      padding-right: 30px;
+      direction: rtl;
+
+    }
+
+    .amount-letters-div,
+    .amount-letters-div * {
+      position: absolute;
+      padding-top: 140px;
+      padding-right: 210px;
+      direction: rtl;
+
+    }
+
+    .name-div,
+    .name-div * {
+      overflow: visible;
+      position: absolute;
+      padding-top: 85px;
+      padding-right: 140px;
+      direction: rtl;
+
+    }
+
+    .sign-div,
+    .sign-div * {
+      overflow: visible;
+      position: absolute;
+      padding-top: 175px;
+      padding-right: 80px;
+      direction: rtl;
+
+    }
+
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+
+
+      @page {
+        size: 627px 291px;
+        margin: 0;
+      }
+
+      /* Remove the date and site heading */
+      head {
+        display: none;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+  <script src="../js/taf.js"></script>
+  <script>
+    window.addEventListener('message', function (event) {
+      if (event.data.file && event.data.data) {
+        const workbook = XLSX.read(event.data.data, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 'A', defval: '' });
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log(sheetData)
+        document.title = JSON.parse(urlParams.get('name'));
+        for (var i = 0; i < sheetData.length; i++) {
+          var cheque_div = document.createElement("div")
+          cheque_div.className = 'cheque-div';
+          var name1 = document.createElement("div")
+          var amount_num = document.createElement("div")
+          var amount_letters = document.createElement("div")
+          var date = document.createElement("div")
+          var sign = document.createElement("div")
+          var place = document.createElement("div")
+          var back = document.createElement("div")
+          back.className = 'background ';
+          name1.className = 'name-div';
+          name1.innerHTML = sheetData[i].B;
+          amount_num.className = 'amount-num-div';
+          amount_num.innerHTML = "#" + sheetData[i].C + "#";
+          amount_letters.className = 'amount-letters-div';
+          amount_letters.innerHTML = "فقط " + tafqeet(sheetData[i].C) + " جنيه مصري لا غير";
+          date.className = 'date-div';
+          date.innerHTML = sheetData[i].D;
+          sign.className = 'sign-div';
+          sign.innerHTML = sheetData[i].E;
+          place.className = 'place-div';
+          place.innerHTML = sheetData[i].F;
+          cheque_div.appendChild(back);
+          cheque_div.appendChild(name1);
+          cheque_div.appendChild(amount_num);
+          cheque_div.appendChild(date);
+          cheque_div.appendChild(sign);
+          cheque_div.appendChild(place);
+          cheque_div.appendChild(amount_letters);
+          document.body.appendChild(cheque_div);
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
