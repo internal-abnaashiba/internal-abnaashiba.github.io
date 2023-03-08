@@ -8,15 +8,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Abnaa Shiba Contracting</title>
+    <title>طباعة الشيكات</title>
 
-    <!-- CSS FILES -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
-
     <link href="../css/bootstrap-icons.css" rel="stylesheet">
-
     <link href="../css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <link href="../css/common.css" rel="stylesheet">
     <link rel="icon" href="../images/logo.jpg">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
     <script src="../js/taf.js"></script>
 
@@ -27,28 +26,32 @@
     <nav class="navbar navbar-expand-lg bg-light shadow-lg" style="direction: rtl;">
         <div class="container">
 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../#home">الصفحة الرئيسية</a>
+                        <a class="nav-link" href="../">الصفحة الرئيسية</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="../#about">عن الشركة</a>
+                        <a class="nav-link" href="#">الرسائل</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="../#work">أعمالنا</a>
+                        <a class="nav-link" href="#">الشيتات</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="../#jops">ألوظائف</a>
+                        <a class="nav-link" href="#">الوظائف</a>
                     </li>
 
 
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="../#contact">تواصل معنا</a>
+                        <a class="nav-link" href="#">الشيكات</a>
                     </li>
 
                     <li class="nav-item ms-3">
@@ -56,7 +59,8 @@
                     </li>
                 </ul>
             </div>
-            <a class="navbar-brand" href="../#home">
+
+            <a class="navbar-brand" href="../">
                 <img src="../images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
                 <span>
                     Abnaa Shiba
@@ -69,10 +73,6 @@
 
     <main>
 
-
-
-
-
         <section class="section-padding">
             <div class="container">
                 <div class="col" style="align-items: center;">
@@ -82,36 +82,70 @@
                     </div>
 
                     <div class="col-lg-10 col-12 text-center mx-auto">
-                        <div class="featured-block d-flex justify-content-center align-items-center">
-                            <label for="input-file" style="    border: 1px solid #ccc;
-                                display: inline-block;
-                                padding: 6px 12px;
-                                cursor: pointer;
-                            ">
-                                اختيار ملف
-                            </label>
-                            <input id="input-file" type="file" accept=".xlsx,.xls,.csv" style="display: none;" />
+                        <div class="featured-block justify-content-center align-items-center">
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <div>
+                                    <select name="bank" id="bank"
+                                        style="direction: rtl; margin: 40px; border: 1px solid #ccc;">
+                                        <option value="nbe">البنك الاهلي</option>
+                                        <option value="boc">بنك القاهرة</option>
+                                        <option value="misr">بنك مصر</option>
+                                        <option value="qnb">بنك قطر</option>
+                                        <option value="wafa">بنك التجاري وفا</option>
+                                    </select>
+                                </div>
 
-                        </div>
-                    </div>
-                    <div class="col-lg-10 col-12 text-center mx-auto">
-                        <div>
-                            <p id="chosen-file-name"> No file chosen. </p>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-10 col-12 text-center mx-auto">
-                        <div id="print-button" class="featured-block d-flex justify-content-center align-items-center">
-                            <button style="    border: 1px solid #ccc;
+                                <div>
+                                    <label for="input-file" class="button">
+                                        اختيار ملف
+                                    </label>
+                                    <input id="input-file" type="file" accept=".xlsx,.xls,.csv"
+                                        style="display: none; margin: 40px;" onchange="readExcelFile()" />
+                                </div>
+                            </div>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <div>
+                                    <p id="chosen-file-name"> No file chosen. </p>
+                                </div>
+                            </div>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <div>
+                                    <button id="print-button" style="    border: 1px solid #ccc;
                             display: inline-block;
                             padding: 6px 12px;
+                            margin: 30px;
                             cursor: pointer;
                         "> طباعة الشيكات </button>
-
+                                </div>
+                                <div>
+                                    <button id="save-button" style="    border: 1px solid #ccc;
+                            display: inline-block;
+                            padding: 6px 12px;
+                            margin: 30px;
+                            cursor: pointer;
+                        "> حفظ الشيكات </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-lg-10 col-12 text-center mx-auto" style="margin: 40px;">
+                        <h2 id="count" class="mb-0" style="font-size: 30px;">عدد الشيكات : 0</h2>
+                        <table id="table_head" style="direction: rtl;" class="table">
+                            <thead style="text-align: center;">
+                                <tr>
+                                    <th style="text-align: center; width: 15%;">رقم الشيك</th>
+                                    <th style="text-align: center; width: 15%;">الاسم</th>
+                                    <th style="text-align: center; width: 15%;">المبلغ</th>
+                                    <th style="text-align: center; width: 15%;">التاريخ</th>
+                                    <th style="text-align: center; width: 15%;">اسم التوقيع</th>
+                                    <th style="text-align: center; width: 15%;">مكان الاصدار</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <table id="table" style="direction: rtl;" class="table"></table>
 
-                </div>
+                    </div>
+
         </section>
 
 
@@ -134,7 +168,9 @@
                         const workbook = XLSX.read(fileData, { type: 'binary' });
                         const sheetName = workbook.SheetNames[0];
                         const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 'A', defval: '' });
-                        const printWindow = window.open(`print.html?name="${inputFile.name.split('.').slice(0, -1).join('.')}"`, '_blank');
+                        var fileName = inputFile.name.split('.').slice(0, -1).join('.');
+                        var bankName = document.getElementById('bank').value;
+                        const printWindow = window.open(`print.html?name="${fileName}"&bank="${bankName}"`, '_blank');
                         printWindow.addEventListener('load', function () {
                             // Pass the file object to the print page
                             printWindow.postMessage({ file: inputFile, data: fileData }, '*');
@@ -146,16 +182,32 @@
                     alert("برجاء اختيار الملف أولاً")
                 }
             });
-            function parseExcelToJSON(data) {
-                // Parse the Excel file and convert it to JSON
-                // ...
-                return jsonData;
+
+            function readExcelFile() {
+                var input = document.getElementById("input-file");
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var data = reader.result;
+                    var workbook = XLSX.read(data, { type: "binary" });
+                    var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var json = XLSX.utils.sheet_to_json(worksheet);
+                    var table = document.getElementById("table");
+                    while (table.firstChild) {
+                        table.removeChild(table.firstChild)
+                    }
+                    json.forEach(function (row) {
+                        var dataRow = table.insertRow();
+                        Object.keys(row).forEach(function (key) {
+                            var dataCell = dataRow.insertCell();
+                            dataCell.textContent = row[key];
+                        });
+                    });
+                    document.getElementById("count").innerHTML = "عدد الشيكات :" + (json.length).toString();
+                };
+
+                reader.readAsBinaryString(input.files[0]);
             }
         </script>
-
-
-
-
 
     </main>
 
