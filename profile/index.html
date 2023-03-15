@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>تسجيل الدخول</title>
+    <title>الصفحة الشخصية</title>
 
     <link href="style.css" rel="stylesheet">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -21,10 +21,12 @@
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+    <style>
+    </style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, EmailAuthProvider} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyCG0QlTFqc3UNU2EnbO5YJGaW5AHt8WZBk",
@@ -39,14 +41,65 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        var signOut = 1;
+
         auth.onAuthStateChanged((user) => {
             if (!user) {
-                location.href = "../"
+                location.href = "../login/index.html?src=\"profile\""
+            }
+            else {
+                db.collection("users").where("id", "==", user.uid)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            console.log("Empty");
+                        }
+                        querySnapshot.forEach((doc) => {
+                            document.getElementById("name").value = doc.data().name
+                            document.getElementById("name2").innerHTML = doc.data().name
+                            document.getElementById("login-text").innerHTML = doc.data().mail.substring(0, doc.data().mail.length - 15);
+                            document.getElementById("mail").value = doc.data().mail
+                            document.getElementById("mail2").innerHTML = doc.data().mail
+                            document.getElementById("phone").value = doc.data().phone
+                            document.getElementById("address").value = doc.data().address
+                            $('#loading').hide();
+                        });
+                    })
+                    .catch((error) => {
+                        console.log("Error getting documents: ", error);
+                    });
+
             }
         });
 
+        document.getElementById('signout').addEventListener('click', function () {
+            $('#loading').show();
+            auth.signOut()
+        });
+        document.getElementById('change-password').addEventListener('click', function () {
+            $('#loading').show();
+            auth.sendPasswordResetEmail(auth.currentUser.email)
+                        .then(function () {
+                            $('#loading').hide();
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم ارسال بريد الكتروني لاعادة تعيين كلمة السر',
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
 
+                        })
+                        .catch(function (error) {
+                            $('#loading').hide();
+                            Swal.fire({
+                                title: `خطأ`,
+                                icon: 'error',
+                                text: `حدث خطأ، برجاء المحاولة لاحقاً`,
+                                confirmButtonText: 'حسنأ',
+
+                            })
+                        });
+        });
 
     </script>
 
@@ -64,6 +117,13 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item ms-3">
+                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="#">
+                            <span id="login-text"></span>
+                            <img src="../images/user.png" alt="Avatar" class="avatar">
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="../">الصفحة الرئيسية</a>
                     </li>
@@ -85,9 +145,6 @@
                         <a class="nav-link" href="../cheques/">الشيكات</a>
                     </li>
 
-                    <li class="nav-item ms-3">
-                        <a class="nav-link custom-btn custom-border-btn btn" href="#">تسجيل الدخول</a>
-                    </li>
                 </ul>
             </div>
 
@@ -107,12 +164,11 @@
         <div class="container rounded bg-white mt-5 mb-5">
             <div class="row">
                 <div class="col-md-3 border-right">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
-                        id="image"
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img id="image"
                             class="rounded-circle mt-5" width="150px"
                             src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
-                            class="font-weight-bold">User Name</span><span
-                            class="text-black-50">user@abnaashiba.com</span><span> </span></div>
+                            class="font-weight-bold" id="name2">User Name</span><span class="text-black-50"
+                            id="mail2">user@abnaashiba.com</span><span> </span></div>
                 </div>
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
@@ -120,32 +176,35 @@
                             <h4 class="text-right">الصفحة الشخصية</h4>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-md-6"><label class="labels">الاسم الأول</label><input type="text" id="fname"
-                                    class="form-control" placeholder="الاسم الأول" value=""></div>
-                            <div class="col-md-6"><label class="labels">الاسم الأخير</label><input type="text" id="lname"
-                                    class="form-control" value="" placeholder="الاسم الأخير"></div>
                         </div>
                         <div class="row mt-3" style="direction: rtl;">
-                            <div class="col-md-12"><label class="labels">البريد الالكتروني</label><input type="text" id="email" disabled
-                                    class="form-control" placeholder="البريد الالكتروني" value=""></div>
-                            <div class="col-md-12"><label class="labels">رقم التليفون</label><input type="text" id="phone"
-                                    class="form-control" placeholder="رقم التليفون" value=""></div>
+                            <div class="col-md-12"><label class="labels">الاسم</label><input type="text" id="name"
+                                    style="margin-bottom: 20px;" class="form-control" placeholder="الاسم الأول"
+                                    value=""></div>
+                            <div class="col-md-12"><label class="labels">رقم التليفون</label><input type="text"
+                                    style="margin-bottom: 20px;" id="phone" class="form-control"
+                                    placeholder="رقم التليفون" value=""></div>
                             <div class="col-md-12"><label class="labels">العنوان</label><input type="text" id="address"
-                                    class="form-control" placeholder="العنوان" value=""></div>
+                                    style="margin-bottom: 20px;" class="form-control" placeholder="العنوان" value="">
+                            </div>
+
+                            <div class="col-md-12"><label class="labels">البريد الالكتروني</label><input type="text"
+                                    style="margin-bottom: 20px;" id="mail" disabled class="form-control"
+                                    placeholder="البريد الالكتروني" value="">
+                            </div>
+
                         </div>
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button" id="save">حفظ الصفحة الشخصية</button></div>
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button" style="background-color: red;" id="change-password">تغيير كلمة المرور</button></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="p-3 py-5">
-                        <a class="navbar-brand">
-                            <img src="../images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
-                            <span>
-                                Abnaa Shiba
-                                <small>Contracting and Real Estate Company</small>
-                            </span>
-                        </a>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button"
+                                style="background-color: green;" id="save">حفظ الصفحة الشخصية</button></div>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button"
+                                id="change-password">تغيير كلمة المرور</button></div>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button"
+                                style="background-color: red;" id="signout">تسجيل الخروج</button></div>
+
 
                     </div>
                 </div>
@@ -255,5 +314,9 @@
     <script src="../js/custom.js"></script>
 
 </body>
+<div id="loading">
+    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
+</div>
+
 
 </html>

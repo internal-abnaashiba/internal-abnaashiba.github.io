@@ -16,6 +16,7 @@
     <link href="css/bootstrap-icons.css" rel="stylesheet">
 
     <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
     <link rel="icon" href="images/logo.jpg">
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -42,6 +43,7 @@
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById("login-text").textContent = user.email.substring(0, user.email.length - 15);
+                $('#loading').hide();
             }
             else {
                 location.href = "login/"
@@ -64,9 +66,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item ms-3">
-                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="login/">
-                            <span id="login-text">تسجيل الدخول</span>
-                            <img src="../images/male_avatar.png" alt="Avatar" class="avatar">
+                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="profile/">
+                            <span id="login-text"></span>
+                            <img src="../images/user.png" alt="Avatar" class="avatar">
                         </a>
                     </li>
                     <li class="nav-item">
@@ -270,5 +272,8 @@
     <script src="js/custom.js"></script>
 
 </body>
+<div id="loading">
+    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
+</div>
 
 </html>

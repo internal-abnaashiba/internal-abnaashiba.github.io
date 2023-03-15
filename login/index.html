@@ -38,12 +38,36 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        var signOut = 1;
         auth.onAuthStateChanged((user) => {
-            if (user && signOut) {
-                auth.signOut()
-                location.href = "../"
+            if (user) {
+                if (user.emailVerified) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        var src = JSON.parse(urlParams.get('src'));                                              
+                        if (src == "cheques") {
+                            location.href = "../cheques"
+                        }
+                        else if (src == "sheets") {
+                            location.href = "../sheets"
+                        }
+                        else if (src == "profile") {
+                            location.href = "../profile"
+                        }
+                        else {
+                            location.href = "../"
+                        }
+                    }
+                    else {
+                        $('#loading').hide();
+                        const myAlert = new SweetAlert({
+                            title: "الحساب غير مفعل",
+                            text: "لم يتم تأكيد البريد الالكتروني لهذا الحساب، برجاء الذهاب للبريد الالكتروني لتأكيد الحساب قبل التمكن من تسجيل الدخول",
+                            icon: "warning",
+                            confirmButtonText: "حسناً",
+                        })
+                        auth.signOut()
+                    }
             }
+            $('#loading').hide();
         });
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
             .then(() => {
@@ -59,27 +83,10 @@
             const password = document.getElementById("password").value;
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    if (auth.currentUser.emailVerified) {
-                        signOut = 0;
-                        const urlParams = new URLSearchParams(window.location.search);
-                        var src = JSON.parse(urlParams.get('src'));
-                        if (src == "cheques") {
-                            location.href = "../cheques"
-                        }
-                        else {
-                            location.href = "../"
-                        }
-                    }
-                    else {
-                        const myAlert = new SweetAlert({
-                            title: "الحساب غير مفعل",
-                            text: "لم يتم تأكيد البريد الالكتروني لهذا الحساب، برجاء الذهاب للبريد الالكتروني لتأكيد الحساب قبل التمكن من تسجيل الدخول",
-                            icon: "warning",
-                            confirmButtonText: "حسناً",
-                        })
-                    }
                 })
                 .catch((error) => {
+                    console.log(error.message)
+                    $('#loading').hide();
                     const myAlert = new SweetAlert({
                         title: "خطأ في تسجيل الدخول",
                         text: "البريد الالكتروني او الرقم السري غير صحيح",
@@ -94,6 +101,7 @@
         const submitButton = document.getElementById('button');
 
         form.addEventListener('submit', (event) => {
+            $('#loading').show();
             event.preventDefault();
             signUp();
 
@@ -127,6 +135,7 @@
                         .catch(function (error) {
                             Swal.fire({
                                 title: `خطأ`,
+                                icon: 'error',
                                 text: `البريد الالكتروني غير مسجل`,
                                 confirmButtonText: 'حسنأ',
 
@@ -369,5 +378,8 @@
     <script src="../js/custom.js"></script>
 
 </body>
+<div id="loading">
+    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
+</div>
 
 </html>

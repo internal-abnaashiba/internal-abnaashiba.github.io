@@ -42,7 +42,8 @@
         const auth = getAuth(app);
         auth.onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById("login-btn").innerHTML = user.email
+                document.getElementById("login-text").textContent = user.email.substring(0, user.email.length - 15);
+                $('#loading').hide();
             }
             else {
                 location.href="../login/index.html?src=\"cheques\""
@@ -65,6 +66,13 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item ms-3">
+                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="../profile/">
+                            <span id="login-text"></span>
+                            <img src="../images/user.png" alt="Avatar" class="avatar">
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="../">الصفحة الرئيسية</a>
                     </li>
@@ -86,9 +94,6 @@
                         <a class="nav-link" href="#">الشيكات</a>
                     </li>
 
-                    <li class="nav-item ms-3">
-                        <a id = "login-btn" class="nav-link custom-btn custom-border-btn btn" href="../login">تسجيل الدخول</a>
-                    </li>
                 </ul>
             </div>
 
@@ -343,5 +348,8 @@
     <script src="../js/custom.js"></script>
 
 </body>
+<div id="loading">
+    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
+</div>
 
 </html>
