@@ -44,22 +44,31 @@
             appId: "1:735720885767:web:0ee2edd27943e2e1dea4a2",
             measurementId: "G-BL58SWW6QX"
         };
+        var stay = 1;
 
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
-        const db = getFirestore(app);
         const auth = getAuth(app);
         function signUp() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             const cpassword = document.getElementById("cpassword").value;
             if (password != cpassword) {
-                alert("الرقم السري غير متطابق")
+                $('#loading').hide();
+                Swal.fire({
+                    title: `خطأ`,
+                    icon: 'error',
+                    text: `الرقم السري غير متطابق`,
+                    confirmButtonText: 'حسنأ',
+                })
             }
             else {
+                stay = 0;
                 auth.createUserWithEmailAndPassword(email, password)
                     .then((userCredential) => {
+                        auth.signOut();
                         userCredential.user.sendEmailVerification();
+                        $('#loading').hide();
                         const myAlert = new SweetAlert({
                             title: "تم انشاء حساب جديد بنجاح",
                             text: "برجاء الذهاب للبريد الالكتروني المسجل لتأكيد حسابك قبل ان تتمكن من تسجيل الدخول",
@@ -73,6 +82,7 @@
                     })
                     .catch((error) => {
                         if (error.code == 'auth/email-already-in-use') {
+                            $('#loading').hide();
                             const myAlert = new SweetAlert({
                                 title: "الحساب موجود بالفعل",
                                 text: "هذا الحساب موجود بالفعل، برجاء تسجيل الدخول بدلأ من انشاء حساب جديد",
@@ -86,6 +96,16 @@
                                 }
                             });
                         }
+                        else {
+                            $('#loading').hide();
+                            Swal.fire({
+                                title: `خطأ`,
+                                icon: 'error',
+                                text: `حدث خطأ ما، برجاء المحاولة لاحقاً`,
+                                confirmButtonText: 'حسنأ',
+                            })
+
+                        }
                     });
             }
 
@@ -94,10 +114,18 @@
         const submitButton = document.getElementById('button');
 
         form.addEventListener('submit', (event) => {
+            $('#loading').show();
             event.preventDefault();
             signUp();
 
 
+        });
+
+        auth.onAuthStateChanged((user) => {
+            $('#loading').hide();
+            if (user && stay) {
+                location.href = "../profile"
+            }
         });
 
 
@@ -190,12 +218,13 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-12 mt-2">
-                                    <input type="password" name="cpassword" id="cpassword" minlength="6"
-                                        class="form-control" placeholder="تأكيد الرقم السري" required>
+                                    <input type="password" name="password" id="password" minlength="6"
+                                        style="direction: ltr;" class="form-control" placeholder="Password" required>
                                 </div>
                                 <div class="col-lg-6 col-12 mt-2">
-                                    <input type="password" name="password" id="password" minlength="6"
-                                        class="form-control" placeholder="الرقم السري" required>
+                                    <input type="password" name="cpassword" id="cpassword" minlength="6"
+                                        style="direction: ltr;" class="form-control" placeholder="Confirm Password"
+                                        required>
                                 </div>
 
 
@@ -314,5 +343,8 @@
     <script src="../js/custom.js"></script>
 
 </body>
+<div id="loading">
+    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
+</div>
 
 </html>
