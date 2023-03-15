@@ -19,6 +19,7 @@
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
     <style>
@@ -26,8 +27,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, EmailAuthProvider} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+        import { getStorage } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-storage.js";
         const firebaseConfig = {
             apiKey: "AIzaSyCG0QlTFqc3UNU2EnbO5YJGaW5AHt8WZBk",
             authDomain: "abnaa-shiba.firebaseapp.com",
@@ -41,6 +43,7 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
 
         auth.onAuthStateChanged((user) => {
             if (!user) {
@@ -53,16 +56,21 @@
                         if (querySnapshot.empty) {
                             console.log("Empty");
                         }
-                        querySnapshot.forEach((doc) => {
-                            document.getElementById("name").value = doc.data().name
-                            document.getElementById("name2").innerHTML = doc.data().name
-                            document.getElementById("login-text").innerHTML = doc.data().mail.substring(0, doc.data().mail.length - 15);
-                            document.getElementById("mail").value = doc.data().mail
-                            document.getElementById("mail2").innerHTML = doc.data().mail
-                            document.getElementById("phone").value = doc.data().phone
-                            document.getElementById("address").value = doc.data().address
-                            $('#loading').hide();
-                        });
+                        else {
+                            querySnapshot.forEach((doc) => {
+                                document.getElementById("name").value = doc.data().name
+                                document.getElementById("name2").innerHTML = doc.data().name
+                                document.getElementById("phone").value = doc.data().phone
+                                document.getElementById("address").value = doc.data().address
+                                if (doc.data().url != "") {
+                                    document.getElementById("image").src = doc.data().url
+                                }
+                            });
+                        }
+                        document.getElementById("login-text").innerHTML = auth.currentUser.email.substring(0, auth.currentUser.email.length - 15);
+                        document.getElementById("mail").value = auth.currentUser.email
+                        document.getElementById("mail2").innerHTML = auth.currentUser.email
+                        $('#loading').hide();
                     })
                     .catch((error) => {
                         console.log("Error getting documents: ", error);
@@ -78,27 +86,119 @@
         document.getElementById('change-password').addEventListener('click', function () {
             $('#loading').show();
             auth.sendPasswordResetEmail(auth.currentUser.email)
-                        .then(function () {
-                            $('#loading').hide();
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'تم ارسال بريد الكتروني لاعادة تعيين كلمة السر',
-                                showConfirmButton: false,
-                                timer: 3000
-                            })
+                .then(function () {
+                    $('#loading').hide();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'تم ارسال بريد الكتروني لاعادة تعيين كلمة السر',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
 
-                        })
-                        .catch(function (error) {
-                            $('#loading').hide();
-                            Swal.fire({
-                                title: `خطأ`,
-                                icon: 'error',
-                                text: `حدث خطأ، برجاء المحاولة لاحقاً`,
-                                confirmButtonText: 'حسنأ',
+                })
+                .catch(function (error) {
+                    $('#loading').hide();
+                    Swal.fire({
+                        title: `خطأ`,
+                        icon: 'error',
+                        text: `حدث خطأ، برجاء المحاولة لاحقاً`,
+                        confirmButtonText: 'حسنأ',
 
-                            })
-                        });
+                    })
+                });
+        });
+        function updateData(name, phone, address, url) {
+            const collectionRef = firebase.firestore().collection("users");
+            const query = collectionRef.where("id", "==", auth.currentUser.uid);
+            query.get().then((snapshot) => {
+                if (!snapshot.empty) {
+                    if (url != "") {
+                        snapshot.forEach((doc) => {
+                            doc.ref.update({
+                                name: name,
+                                phone: phone,
+                                address: address,
+                                url: url,
+                            });
+                        }); 
+                    }
+                    else {
+                        snapshot.forEach((doc) => {
+                            doc.ref.update({
+                                name: name,
+                                phone: phone,
+                                address: address,
+                            });
+                        }); 
+                    }
+                } else {
+                    collectionRef.add({
+                        name: name,
+                        phone: phone,
+                        address: address,
+                        id: auth.currentUser.uid,
+                        mail: auth.currentUser.email,
+                        url: url,
+                    });
+                }
+                document.getElementById("name2").innerHTML = name
+                $('#loading').hide();
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'تم تعديل الصفحة الشخصية بنجاح',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+
+            }).catch((error) => {
+                $('#loading').hide();
+                Swal.fire({
+                    title: `خطأ`,
+                    icon: 'error',
+                    text: `حدث خطأ، برجاء المحاولة لاحقاً`,
+                    confirmButtonText: 'حسنأ',
+                })
+            });
+
+        }
+        document.getElementById('save').addEventListener('click', function () {
+            $('#loading').show();
+            const name = document.getElementById("name").value
+            const phone = document.getElementById("phone").value
+            const address = document.getElementById("address").value
+            const file = document.getElementById("image-input").files[0];
+            if (file) {
+                const storageRef = storage.ref("profiles/" + auth.currentUser.uid);
+                storageRef.put(file).then((snapshot) => {
+                    storageRef.getDownloadURL().then((url) => {
+                        const image = document.getElementById("image");
+                        image.src = url;
+                        updateData(name, phone, address, url)
+                    });
+                }).catch((error) => {
+                    console.error(error);
+                });
+
+            }
+            else {
+                updateData(name, phone, address, "")
+            }
+        });
+
+        document.getElementById('image').addEventListener('click', function () {
+            document.getElementById('image-input').click();
+        });
+
+        document.getElementById('image-input').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+                const image = document.getElementById("image");
+                image.src = reader.result;
+            });
+            reader.readAsDataURL(file);
         });
 
     </script>
@@ -118,7 +218,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item ms-3">
-                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="#">
+                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn">
                             <span id="login-text"></span>
                             <img src="../images/user.png" alt="Avatar" class="avatar">
                         </a>
@@ -164,11 +264,13 @@
         <div class="container rounded bg-white mt-5 mb-5">
             <div class="row">
                 <div class="col-md-3 border-right">
+                    <input type="file" id="image-input" style="display: none;">
+
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img id="image"
-                            class="rounded-circle mt-5" width="150px"
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
-                            class="font-weight-bold" id="name2">User Name</span><span class="text-black-50"
-                            id="mail2">user@abnaashiba.com</span><span> </span></div>
+                            class="rounded-circle mt-5 hover-pointer" width="150px" src="../images/user.png"
+                            id="image"><span class="font-weight-bold" id="name2">User
+                            Name</span><span class="text-black-50" id="mail2">user@abnaashiba.com</span><span> </span>
+                    </div>
                 </div>
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
