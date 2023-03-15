@@ -8,24 +8,22 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>طباعة الشيكات</title>
+    <title>تسجيل الدخول</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/bootstrap-icons.css" rel="stylesheet">
     <link href="../css/templatemo-kind-heart-charity.css" rel="stylesheet">
     <link href="../css/common.css" rel="stylesheet">
     <link rel="icon" href="../images/logo.jpg">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
-    <script src="../js/taf.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyCG0QlTFqc3UNU2EnbO5YJGaW5AHt8WZBk",
@@ -40,14 +38,118 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        var signOut = 1;
         auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById("login-btn").innerHTML = user.email
-            }
-            else {
-                location.href="../login/index.html?src=\"cheques\""
+            if (user && signOut) {
+                auth.signOut()
+                location.href = "../"
             }
         });
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                // persistence enabled
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+
+        function signUp() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    if (auth.currentUser.emailVerified) {
+                        signOut = 0;
+                        const urlParams = new URLSearchParams(window.location.search);
+                        var src = JSON.parse(urlParams.get('src'));
+                        if (src == "cheques") {
+                            location.href = "../cheques"
+                        }
+                        else {
+                            location.href = "../"
+                        }
+                    }
+                    else {
+                        const myAlert = new SweetAlert({
+                            title: "الحساب غير مفعل",
+                            text: "لم يتم تأكيد البريد الالكتروني لهذا الحساب، برجاء الذهاب للبريد الالكتروني لتأكيد الحساب قبل التمكن من تسجيل الدخول",
+                            icon: "warning",
+                            confirmButtonText: "حسناً",
+                        })
+                    }
+                })
+                .catch((error) => {
+                    const myAlert = new SweetAlert({
+                        title: "خطأ في تسجيل الدخول",
+                        text: "البريد الالكتروني او الرقم السري غير صحيح",
+                        icon: "error",
+                        confirmButtonText: "اعادة المحاولة",
+                    })
+                });
+
+
+        }
+        const form = document.getElementById('myForm');
+        const submitButton = document.getElementById('button');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            signUp();
+
+
+        });
+
+        document.getElementById('forgot-btn').addEventListener('click', function () {
+            Swal.fire({
+                title: 'نسيت كلمةالمرور؟',
+                text: 'برجاء ادخال البريد الالكتروني',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'اعادة تعيين كلمة المرور',
+                cancelButtonText: 'الغاء',
+                showLoaderOnConfirm: true,
+                preConfirm: (email) => {
+                    auth.sendPasswordResetEmail(email)
+                        .then(function () {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم ارسال بريد الكتروني لاعادة تعيين كلمة السر',
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: `خطأ`,
+                                text: `البريد الالكتروني غير مسجل`,
+                                confirmButtonText: 'حسنأ',
+
+                            })
+                        });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                }
+            })
+
+        });
+
+        document.getElementById('signup-btn').addEventListener('click', function () {
+            location.href = "../signup"
+        });
+
+    </script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="../js/signup.js"></script>
+    <script>
+
 
     </script>
 
@@ -83,11 +185,11 @@
 
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">الشيكات</a>
+                        <a class="nav-link" href="../cheques/">الشيكات</a>
                     </li>
 
                     <li class="nav-item ms-3">
-                        <a id = "login-btn" class="nav-link custom-btn custom-border-btn btn" href="../login">تسجيل الدخول</a>
+                        <a class="nav-link custom-btn custom-border-btn btn" href="#">تسجيل الدخول</a>
                     </li>
                 </ul>
             </div>
@@ -105,142 +207,66 @@
 
     <main>
 
-        <section class="section-padding">
+        <section class="donate-section">
+            <div class="section-overlay"></div>
             <div class="container">
-                <div class="col" style="align-items: center;">
+                <div class="row">
 
-                    <div class="col-lg-10 col-12 text-center mx-auto">
-                        <h2 class="mb-5">طباعة الشيكات</h2>
-                    </div>
+                    <div class="col-lg-6 col-12 mx-auto">
+                        <form id="myForm" class="custom-form donate-form" method="get" role="form">
 
-                    <div class="col-lg-10 col-12 text-center mx-auto">
-                        <div class="featured-block justify-content-center align-items-center">
-                            <div class=" d-flex justify-content-center align-items-center">
-                                <div>
-                                    <select name="bank" id="bank"
-                                        style="direction: rtl; margin: 40px; border: 1px solid #ccc;">
-                                        <option value="nbe">البنك الاهلي</option>
-                                        <option value="boc">بنك القاهرة</option>
-                                        <option value="misr">بنك مصر</option>
-                                        <option value="qnb">بنك قطر</option>
-                                        <option value="wafa">بنك التجاري وفا</option>
-                                    </select>
+                            <a class="navbar-brand " href="../">
+                                <img src="../images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
+                                <span>
+                                    Abnaa Shiba
+                                    <small>Contracting and Real Estate Company</small>
+                                </span>
+                            </a>
+
+                            <div class="row">
+
+                                <div class="col-lg-12 col-12"
+                                    style="direction: rtl; margin-top: 10px; margin-bottom: 10px;">
+                                    <h5 class="mt-1">تسجيل الدخول</h5>
                                 </div>
 
-                                <div>
-                                    <label for="input-file" class="button">
-                                        اختيار ملف
-                                    </label>
-                                    <input id="input-file" type="file" accept=".xlsx,.xls,.csv"
-                                        style="display: none; margin: 40px;" onchange="readExcelFile()" />
+                                <div class="col-lg-12 col-12 form-check-group">
+                                    <div class="input-group">
+
+                                        <input type="email" class="form-control" placeholder="Email" name="email"
+                                            id="email" aria-label="Username" aria-describedby="basic-addon1"
+                                            pattern="[a-zA-Z0-9._%+-]+@abnaashiba\.com$" title="example@abnaashiba.com">
+                                        <span class="input-group-text" id="basic-addon1">@abnaashiba.com</span>
+                                    </div>
                                 </div>
+                                <div class="col-lg-12 col-12 mt-2">
+                                    <input type="password" name="password" id="password" minlength="6"
+                                        class="form-control" placeholder="Password" style="direction: ltr;" required>
+                                </div>
+
+
+                                <div class="col-lg-12 col-12 mt-2">
+
+                                    <button id="button" type="submit" class="form-control mt-4">تسجيل الدخول</button>
+                                </div>
+
                             </div>
-                            <div class=" d-flex justify-content-center align-items-center">
-                                <div>
-                                    <p id="chosen-file-name"> No file chosen. </p>
-                                </div>
+                        </form>
+                        <div class="row">
+
+                            <div class="col-lg-6 col-12 mt-2">
+                                <button id="signup-btn" class="form-control mt-4">انشاء حساب جديد</button>
                             </div>
-                            <div class=" d-flex justify-content-center align-items-center">
-                                <div>
-                                    <button id="print-button" style="    border: 1px solid #ccc;
-                            display: inline-block;
-                            padding: 6px 12px;
-                            margin: 30px;
-                            cursor: pointer;
-                        "> طباعة الشيكات </button>
-                                </div>
-                                <div>
-                                    <button id="save-button" style="    border: 1px solid #ccc;
-                            display: inline-block;
-                            padding: 6px 12px;
-                            margin: 30px;
-                            cursor: pointer;
-                        "> حفظ الشيكات </button>
-                                </div>
+                            <div class="col-lg-6 col-12 mt-2">
+                                <button id="forgot-btn" class="form-control mt-4">نسيت كلمة السر؟</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-10 col-12 text-center mx-auto" style="margin: 40px;">
-                        <h2 id="count" class="mb-0" style="font-size: 30px;">عدد الشيكات : 0</h2>
-                        <table id="table_head" style="direction: rtl;" class="table">
-                            <thead style="text-align: center;">
-                                <tr>
-                                    <th style="text-align: center; width: 15%;">رقم الشيك</th>
-                                    <th style="text-align: center; width: 15%;">الاسم</th>
-                                    <th style="text-align: center; width: 15%;">المبلغ</th>
-                                    <th style="text-align: center; width: 15%;">التاريخ</th>
-                                    <th style="text-align: center; width: 15%;">اسم التوقيع</th>
-                                    <th style="text-align: center; width: 15%;">مكان الاصدار</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        <table id="table" style="direction: rtl;" class="table"></table>
 
                     </div>
 
+                </div>
+            </div>
         </section>
-
-
-
-
-        <script>
-
-            document.getElementById('input-file').addEventListener('change', function (e) {
-                var file = e.target.files[0];
-                document.getElementById('chosen-file-name').innerHTML = file.name;
-
-            });
-
-            document.getElementById('print-button').addEventListener('click', function () {
-                const inputFile = document.getElementById('input-file').files[0];
-                if (inputFile) {
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        const fileData = reader.result;
-                        const workbook = XLSX.read(fileData, { type: 'binary' });
-                        const sheetName = workbook.SheetNames[0];
-                        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 'A', defval: '' });
-                        var fileName = inputFile.name.split('.').slice(0, -1).join('.');
-                        var bankName = document.getElementById('bank').value;
-                        const printWindow = window.open(`print.html?name="${fileName}"&bank="${bankName}"`, '_blank');
-                        printWindow.addEventListener('load', function () {
-                            // Pass the file object to the print page
-                            printWindow.postMessage({ file: inputFile, data: fileData }, '*');
-                        });
-                    }
-                    reader.readAsBinaryString(inputFile);
-                }
-                else {
-                    alert("برجاء اختيار الملف أولاً")
-                }
-            });
-
-            function readExcelFile() {
-                var input = document.getElementById("input-file");
-                var reader = new FileReader();
-                reader.onload = function () {
-                    var data = reader.result;
-                    var workbook = XLSX.read(data, { type: "binary" });
-                    var worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    var json = XLSX.utils.sheet_to_json(worksheet);
-                    var table = document.getElementById("table");
-                    while (table.firstChild) {
-                        table.removeChild(table.firstChild)
-                    }
-                    json.forEach(function (row) {
-                        var dataRow = table.insertRow();
-                        Object.keys(row).forEach(function (key) {
-                            var dataCell = dataRow.insertCell();
-                            dataCell.textContent = row[key];
-                        });
-                    });
-                    document.getElementById("count").innerHTML = "عدد الشيكات :" + (json.length).toString();
-                };
-
-                reader.readAsBinaryString(input.files[0]);
-            }
-        </script>
-
     </main>
 
     <footer class="site-footer">

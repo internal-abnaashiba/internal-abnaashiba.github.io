@@ -770,7 +770,7 @@ strong {
   DONATE              
 -----------------------------------------*/
 .donate-section {
-  background-image: url('../images/different-people-doing-volunteer-work.jpg');
+  background-image: url('../images/art_back.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -1110,6 +1110,15 @@ blockquote::before {
   padding-bottom: 13px;
   outline: none;
 }
+
+.avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
 
 .custom-form .form-control:hover,
 .custom-form .form-control:focus {
