@@ -777,6 +777,8 @@ strong {
   position: relative;
   padding-top: 150px;
   padding-bottom: 150px;
+  height: 100vh; /* Sets the section height to the full viewport */
+  width: 100%; /* Ensures full width */
 }
 
 .donate-form {
@@ -1302,7 +1304,6 @@ blockquote::before {
   background-color: var(--secondary-color);
   position: relative;
   z-index: 2;
-  margin-top: 70px;
   padding-top: 25px;
   padding-bottom: 25px;
 }

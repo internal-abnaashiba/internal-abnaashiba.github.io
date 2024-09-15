@@ -18,105 +18,60 @@
     <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
     <link href="css/common.css" rel="stylesheet">
     <link rel="icon" href="images/logo.jpg">
-    <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
-        const firebaseConfig = {
-            apiKey: "AIzaSyCG0QlTFqc3UNU2EnbO5YJGaW5AHt8WZBk",
-            authDomain: "abnaa-shiba.firebaseapp.com",
-            databaseURL: "https://abnaa-shiba-default-rtdb.firebaseio.com",
-            projectId: "abnaa-shiba",
-            storageBucket: "abnaa-shiba.appspot.com",
-            messagingSenderId: "735720885767",
-            appId: "1:735720885767:web:0ee2edd27943e2e1dea4a2",
-            measurementId: "G-BL58SWW6QX"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById("login-text").textContent = user.email.substring(0, user.email.length - 15);
-                $('#loading').hide();
-            }
-            else {
-                location.href = "login/"
-            }
-        });
-    </script>
-
 </head>
 
-<body id="section_1">
+<div id="loading">
+    <img style="z-index: 100;" src="/images/loading.gif" alt="Loading..." />
+</div>
 
-    <nav class="navbar navbar-expand-lg bg-light shadow-lg" style="direction: rtl;">
+<body id="body" >
+    <nav class="navbar navbar-expand-lg bg-light shadow-lg" style="direction: rtl;" >
         <div class="container">
-
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item ms-3">
-                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="profile/">
+                        <a id="login-btn" class="nav-link custom-btn custom-border-btn btn" href="/profile/">
                             <span id="login-text"></span>
-                            <img src="../images/user.png" alt="Avatar" class="avatar">
+                            <img src="/images/user.png" alt="Avatar" class="avatar">
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#home">الصفحة الرئيسية</a>
+                        <a class="nav-link click-scroll" href="/">الصفحة الرئيسية</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#">الرسائل</a>
+                        <a class="nav-link click-scroll" href="/messages">الرسائل</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#">الشيتات</a>
+                        <a class="nav-link click-scroll" href="/projects">المشاريع</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link click-scroll" href="#">الوظائف</a>
+                        <a class="nav-link click-scroll" href="/info">البيانات</a>
                     </li>
-
-
                     <li class="nav-item">
                         <a class="nav-link click-scroll" href="/cheques">الشيكات</a>
                     </li>
-
                 </ul>
             </div>
-            <a class="navbar-brand" href="#home">
-                <img src="images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
+            <a class="navbar-brand" href="/">
+                <img src="/images/logo.png" class="logo img-fluid" alt="Abnaa Shiba Contracting">
                 <span>
                     Abnaa Shiba
                     <small>Contracting and Real Estate Company</small>
                 </span>
             </a>
-
         </div>
     </nav>
-
     <main>
-
-
-
         <section class="section-padding">
             <div class="container">
                 <div class="row">
-
                     <div class="col-lg-10 col-12 text-center mx-auto">
                         <h2 class="mb-5">شركة أبناء شيبة للمقاولات والاستثمار العقاري</h2>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
                         <div class="featured-block d-flex justify-content-center align-items-center">
                             <a href="/cheques" class="d-block">
@@ -126,29 +81,26 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
                         <div class="featured-block d-flex justify-content-center align-items-center">
-                            <a href="#" class="d-block">
+                            <a href="./projects/" class="d-block">
                                 <img src="images/icons/jop.jpg" class="featured-block-image img-fluid" alt="">
 
-                                <p class="featured-block-text">الوظائف</p>
+                                <p class="featured-block-text">المشاريع</p>
                             </a>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
                         <div class="featured-block d-flex justify-content-center align-items-center">
-                            <a href="#" class="d-block">
+                            <a href="./info/" class="d-block">
                                 <img src="images/icons/sheet.jpg" class="featured-block-image img-fluid" alt="">
-
-                                <p class="featured-block-text">الشيتات</p>
+                                <p class="featured-block-text">البيانات</p>
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
                         <div class="featured-block d-flex justify-content-center align-items-center">
-                            <a href="#" class="d-block">
+                            <a href="./messages/" class="d-block">
                                 <img src="images/icons/message.jpg" class="featured-block-image img-fluid" alt="">
 
                                 <p class="featured-block-text">الرسائل</p>
@@ -157,123 +109,54 @@
                     </div>
                 </div>
             </div>
-
         </section>
-
-
-
-
-
-
-
-
-
-
-
-
     </main>
 
-    <footer class="site-footer">
-        <div class="container" style="direction: rtl;">
+    <div class="site-footer-bottom">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-12 mb-4">
-                    <img src="images/logo.jpg" class="logo img-fluid" alt="">
+                <div class="col-lg-6 col-md-7 col-12" style="direction: ltr;">
+                    <p style="direction: ltr;" class="copyright-text mb-0">This Website was developed by <a
+                            href="https://www.ahmedhassandev.com/">Ahmed Hassan</a>.</p>
+                    <p style="direction: ltr;" class="copyright-text mb-0">For any support, contact me at <a
+                            href="mailto:ahmadmhasann@gmail.com">ahmadmhasann@gmail.com</a></p>
                 </div>
+                <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
+                    <ul class="social-icon">
+                        <li class="social-icon-item">
+                            <a href="mailto:ahmadmhasann@gmail.com" class="social-icon-link bi-envelope"></a>
+                        </li>
 
-                <div class="col-lg-4 col-md-6 col-12 mb-4">
-                    <h5 class="site-footer-title mb-3">روابط مهمة</h5>
+                        <li class="social-icon-item">
+                            <a href="https://www.facebook.com/ahmadmhasann/" class="social-icon-link bi-facebook"></a>
+                        </li>
 
-                    <ul class="footer-menu">
-                        <li class="footer-menu-item"><a href="#home" class="footer-menu-link">الصفحة الرئيسية</a></li>
-                        <li class="footer-menu-item"><a href="#work" class="footer-menu-link">أعمالنا</a></li>
-                        <li class="footer-menu-item"><a href="#jops" class="footer-menu-link">الوظائف</a></li>
-                        <li class="footer-menu-item"><a href="#about" class="footer-menu-link">عن الشركة</a></li>
-                        <li class="footer-menu-item"><a href="#contact" class="footer-menu-link">تواصل معنا</a></li>
+                        <li class="social-icon-item">
+                            <a href="https://www.linkedin.com/in/ahmadmhasann/"
+                                class="social-icon-link bi-linkedin"></a>
+                        </li>
 
+                        <li class="social-icon-item">
+                            <a href="tel:+201024242768" class="social-icon-link bi-telephone-fill"></a>
+                        </li>
                     </ul>
                 </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mx-auto">
-                    <h5 class="site-footer-title mb-3">بيانات التواصل</h5>
-
-                    <p class="text-white d-flex mb-2">
-                        <i class="bi-telephone me-2"></i>
-
-                        <a href="tel:+201234567890" class="site-footer-link">
-                            01234567890
-                        </a>
-                    </p>
-
-                    <p class="text-white d-flex">
-                        <i class="bi-envelope me-2"></i>
-
-                        <a href="mailto:info@abnaashiba.com" class="site-footer-link">
-                            info@abnaashiba.com
-                        </a>
-                    </p>
-
-                    <p class="text-white d-flex mt-3">
-                        <i class="bi-geo-alt me-2"></i>
-
-                        <a href="https://goo.gl/maps/qigXTQX86w66cWm29" class="site-footer-link">
-                            الفيوم
-                        </a>
-                    </p>
-
-                    <a href="tel:+201234567890" class="custom-btn btn mt-3">اتصل بنا</a>
-                </div>
             </div>
         </div>
-
-        <div class="site-footer-bottom">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-lg-6 col-md-7 col-12" style="direction: ltr;">
-                        <p style="direction: ltr;" class="copyright-text mb-0">This Website was developed by <a
-                                href="https://www.linkedin.com/in/ahmadmhasann/">Ahmed Hassan</a>.</p>
-                        <p style="direction: ltr;" class="copyright-text mb-0">For any support, contact me at <a
-                                href="mailto:ahmadmhasann@gmail.com">ahmadmhasann@gmail.com</a></p>
-                    </div>
-
-                    <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
-                        <ul class="social-icon">
-                            <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-envelope"></a>
-                            </li>
-
-                            <li class="social-icon-item">
-                                <a href="https://www.facebook.com/ahmadmhasann/"
-                                    class="social-icon-link bi-facebook"></a>
-                            </li>
-
-                            <li class="social-icon-item">
-                                <a href="https://www.linkedin.com/in/ahmadmhasann/"
-                                    class="social-icon-link bi-linkedin"></a>
-                            </li>
-
-                            <li class="social-icon-item">
-                                <a href="tel:+201024242768" class="social-icon-link bi-telephone-fill"></a>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    </div>
+    <script type="module" src="/js/auth.js"></script>
+    <script type="module">
+        import { endLoading } from "/js/firebaseUtils.js";
+        document.addEventListener('DOMContentLoaded', () => {
+            endLoading();
+        });
+    </script>
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
-    <script src="js/click-scroll.js"></script>
     <script src="js/counter.js"></script>
     <script src="js/custom.js"></script>
-
 </body>
-<div id="loading">
-    <img id="loading-image" src="../images/loader.gif" alt="Loading..." />
-</div>
 
 </html>

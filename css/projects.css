@@ -1,0 +1,120 @@
+    .document {
+        margin-bottom: 20px;
+        direction: rtl;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .content-loading {
+        margin-bottom: 20px;
+        direction: rtl;
+        padding: 10px;
+        border: 1px solid #ccc;
+        align-self: center;
+        display: inline-block;
+    }
+
+    .document label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .document input {
+        margin-bottom: 10px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .document button {
+        margin-right: 10px;
+        padding: 5px 10px;
+    }
+
+    .image-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 columns per row */
+        gap: 10px;
+        /* Space between images */
+    }
+
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        /* Ensure images take up full width of the grid cell */
+    }
+
+    .image-wrapper img {
+        width: 100%;
+        /* Responsive width */
+        height: auto;
+        /* Maintain aspect ratio */
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        display: none;
+    }
+
+    .custom-file-label {
+        display: none;
+        padding: 5px 20px;
+        margin: 0;
+        background-color: #9ac2b4;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+        text-align: center;
+        width: 100%;
+        border: none;
+    }
+
+    .custom-button {
+        padding: 10px 20px;
+        display: inline-block;
+        background-color: #04AA6D;
+        margin: 0;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+        text-align: center;
+        width: 100%;
+        border: none;
+    }
+
+    .custom-button:hover {
+        background-color: #018957;
+    }
+
+    .custom-file-label:hover {
+        background-color: #81bfa8;
+    }
+
+    .project-div {
+        padding: 20px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #f9f9f9;
+    }
+
+    .project-div:hover {
+        background-color: #e0f7fa;
+    }
+
+    .project-label {
+        font-weight: bold;
+    }
+
+    .project-info {
+        margin-bottom: 10px;
+    }
